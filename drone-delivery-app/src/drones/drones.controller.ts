@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Controller,
+  ParseIntPipe,
+  Body,
+  Param,
+  Query,
+  Get,
+  Post,
+} from '@nestjs/common';
 import { Drone } from './drone.entity';
 import { DronesService } from './drones.service';
 import { CreateDroneDto } from './dto/create-drone.dto';
@@ -17,5 +25,10 @@ export class DronesController {
   @Get()
   list(@Query() getDronesDto: GetDronesDto): Promise<IPagination<Drone>> {
     return this.dronesService.getDrones(getDronesDto);
+  }
+
+  @Get('/:id')
+  read(@Param('id', ParseIntPipe) id: number): Promise<Drone> {
+    return this.dronesService.getDroneById(id);
   }
 }

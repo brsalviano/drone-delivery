@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial } from 'typeorm';
 import { GetDronesDto } from './dto/get-drones.dto';
 import { IPagination } from './interfaces/pagination.interface';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class DronesService {
@@ -23,5 +24,15 @@ export class DronesService {
 
   getDrones(getDronesDto: GetDronesDto): Promise<IPagination<Drone>> {
     return this.droneRepository.paginateDrones(getDronesDto);
+  }
+
+  async getDroneById(id: number): Promise<Drone> {
+    const foundDrone = await this.droneRepository.findOne(id);
+
+    if (!foundDrone) {
+      throw new NotFoundException(`Drone with id ${id} not found`);
+    }
+
+    return foundDrone;
   }
 }
