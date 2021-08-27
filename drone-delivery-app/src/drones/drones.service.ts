@@ -7,6 +7,7 @@ import { DeepPartial } from 'typeorm';
 import { GetDronesDto } from './dto/get-drones.dto';
 import { IPagination } from './interfaces/pagination.interface';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateDroneDto } from './dto/update-drone.dto';
 
 @Injectable()
 export class DronesService {
@@ -34,6 +35,18 @@ export class DronesService {
     }
 
     return foundDrone;
+  }
+
+  async updateDrone(
+    updateDroneDto: UpdateDroneDto,
+    id: number,
+  ): Promise<Drone> {
+    const drone = await this.getDroneById(id);
+    for (const key of Object.keys(updateDroneDto)) {
+      drone[key] = updateDroneDto[key];
+    }
+    this.droneRepository.save(drone);
+    return drone;
   }
 
   async deleteDrone(id: number): Promise<void> {

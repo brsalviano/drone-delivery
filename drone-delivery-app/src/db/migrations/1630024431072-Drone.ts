@@ -36,12 +36,12 @@ export class Drone1630024431072 implements MigrationInterface {
           },
           {
             name: 'max_speed',
-            type: 'decimal',
+            type: 'float(4,2)',
             isNullable: false,
           },
           {
             name: 'average_speed',
-            type: 'decimal',
+            type: 'float(4,2)',
             isNullable: false,
           },
           {

@@ -7,12 +7,14 @@ import {
   Get,
   Post,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { Drone } from './drone.entity';
 import { DronesService } from './drones.service';
 import { CreateDroneDto } from './dto/create-drone.dto';
 import { GetDronesDto } from './dto/get-drones.dto';
 import { IPagination } from './interfaces/pagination.interface';
+import { UpdateDroneDto } from './dto/update-drone.dto';
 
 @Controller('drones')
 export class DronesController {
@@ -31,6 +33,14 @@ export class DronesController {
   @Get('/:id')
   read(@Param('id', ParseIntPipe) id: number): Promise<Drone> {
     return this.dronesService.getDroneById(id);
+  }
+
+  @Put('/:id')
+  updateDrone(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDroneDto: UpdateDroneDto,
+  ): Promise<Drone> {
+    return this.dronesService.updateDrone(updateDroneDto, id);
   }
 
   @Delete('/:id')
