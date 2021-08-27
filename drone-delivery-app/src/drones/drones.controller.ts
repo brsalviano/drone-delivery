@@ -6,6 +6,7 @@ import {
   Query,
   Get,
   Post,
+  Delete,
 } from '@nestjs/common';
 import { Drone } from './drone.entity';
 import { DronesService } from './drones.service';
@@ -30,5 +31,10 @@ export class DronesController {
   @Get('/:id')
   read(@Param('id', ParseIntPipe) id: number): Promise<Drone> {
     return this.dronesService.getDroneById(id);
+  }
+
+  @Delete('/:id')
+  deleteDrone(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.dronesService.deleteDrone(id);
   }
 }

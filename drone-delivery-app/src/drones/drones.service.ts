@@ -35,4 +35,12 @@ export class DronesService {
 
     return foundDrone;
   }
+
+  async deleteDrone(id: number): Promise<void> {
+    const deleteResult = await this.droneRepository.delete(id);
+
+    if (deleteResult.affected === 0) {
+      throw new NotFoundException(`Drone with id ${id} not found`);
+    }
+  }
 }
