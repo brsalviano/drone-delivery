@@ -1,12 +1,4 @@
-import {
-  Allow,
-  IsDecimal,
-  IsEnum,
-  IsOptional,
-  IsUrl,
-  Max,
-  Min,
-} from 'class-validator';
+import { Allow, IsEnum, IsOptional, IsUrl, Max, Min } from 'class-validator';
 import { DroneStatus } from '../drone-status.enum';
 
 export class UpdateDroneDto {

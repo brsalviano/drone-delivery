@@ -17,9 +17,13 @@ export class CreateDroneDto {
   @IsNotEmpty()
   battery: number;
 
+  @Min(0)
+  @Max(99)
   @IsNotEmpty()
   maxSpeed: number;
 
+  @Min(0)
+  @Max(99)
   @IsNotEmpty()
   averageSpeed: number;
 

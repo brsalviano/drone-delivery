@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { getConnectionOptions } from 'typeorm';
+import * as ormconfig from './db/typeorm/ormconfig';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DronesModule } from './drones/drones.module';
@@ -10,8 +10,11 @@ import { DronesModule } from './drones/drones.module';
   imports: [
     ConfigModule.forRoot(),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       useFactory: async () => {
-        return Object.assign(await getConnectionOptions(), {
+        //Estou juntando a configuração padrão do typeorm
+        //com campos específicos do nest.
+        return Object.assign(ormconfig(), {
           autoLoadEntities: true,
         });
       },
