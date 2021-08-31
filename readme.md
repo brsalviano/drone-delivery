@@ -42,3 +42,15 @@ Para fazer o seed, execute o comando:
 ```
 docker-compose run app yarn seed
 ```
+
+## Executando os teste
+
+### Unitários
+```
+docker-compose run app yarn test
+```
+
+### Funcionais
+```
+docker-compose run app yarn test:e2e
+```

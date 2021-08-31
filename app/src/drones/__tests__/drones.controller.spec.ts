@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { DronesController } from './drones.controller';
-import { DronesService } from './drones.service';
-import { DroneStatus } from './drone-status.enum';
-import { CreateDroneDto } from './dto/create-drone.dto';
+import { DronesController } from '../drones.controller';
+import { DronesService } from '../drones.service';
+import { CreateDroneDto } from '../dto/create-drone.dto';
 
 const newDrone: CreateDroneDto = {
   image: 'https://robohash.org/verovoluptatequia.jpg',
