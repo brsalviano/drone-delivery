@@ -7,7 +7,7 @@ services:
       - '3306:3306'
     volumes:
       - drone_delivery_mysql:/var/lib/mysql
-    restart: always
+    restart: unless-stopped
     healthcheck:
       test: mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD
     environment:
@@ -19,7 +19,7 @@ services:
     ports:
       - '3000:3000'
       - '9229:9229'
-    #Variáveis de ambiente de desenvolvimento!!
+    #Variáveis de ambiente de desenvolvimento:
     environment:
       NODE_ENV: development
       DB_HOST: db
