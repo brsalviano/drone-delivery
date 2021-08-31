@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as ormconfig from './db/typeorm/ormconfig';
+import ormconfig from './db/typeorm/ormconfig';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DronesModule } from './drones/drones.module';

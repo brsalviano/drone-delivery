@@ -1,4 +1,4 @@
-version: '2'
+version: '2.4'
 
 services:
   db:
@@ -8,8 +8,30 @@ services:
     volumes:
       - drone_delivery_mysql:/var/lib/mysql
     restart: always
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD
     environment:
       MYSQL_ROOT_PASSWORD: development123
       MYSQL_DATABASE: drone_delivery
+  app:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+      - '9229:9229'
+    #Variáveis de ambiente de desenvolvimento!!
+    environment:
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_USERNAME: root
+      DB_PASSWORD: development123
+      DB_DATABASE: drone_delivery
+    volumes:
+      - ./app:/node/app
+      - /node/app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
 volumes:
   drone_delivery_mysql:
