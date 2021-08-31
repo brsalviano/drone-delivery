@@ -20,7 +20,8 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js --config src/db/typeorm/ormconfig-cli.ts",
-    "typeorm:container": "ts-node -r tsconfig-paths/register ../node_modules/typeorm/cli.js --config src/db/typeorm/ormconfig-cli.ts"
+    "typeorm:container": "ts-node -r tsconfig-paths/register ../node_modules/typeorm/cli.js --config src/db/typeorm/ormconfig-cli.ts",
+    "seed": "ts-node -r tsconfig-paths/register -r dotenv/config src/db/typeorm/seeder/index.ts"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -30,6 +31,7 @@
     "@nestjs/typeorm": "^8.0.2",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "dotenv": "^10.0.0",
     "faker": "^5.5.3",
     "mysql2": "^2.3.0",
     "reflect-metadata": "^0.1.13",

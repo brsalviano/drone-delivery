@@ -23,7 +23,7 @@ As variáveis de ambiente do sistema (no caso do docker, aquelas que estão no c
       DB_DATABASE: drone_delivery
 ```
 
-### Fazendo as migrações
+### Fazendo as migrações e o seed
 
 Suba o container do banco de dados:
 
@@ -35,4 +35,10 @@ Execute as migrações através do container da aplicação:
 
 ```
 docker-compose run app yarn typeorm:container migration:run
+```
+
+Para fazer o seed, execute o comando:
+
+```
+docker-compose run app yarn seed
 ```
