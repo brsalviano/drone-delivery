@@ -1,7 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { DronesService } from '../drones.service';
-import { DroneRepository } from '../_drone.repository';
 
 describe('DronesService', () => {
   let service: DronesService;
@@ -16,7 +14,7 @@ describe('DronesService', () => {
       providers: [
         DronesService,
         {
-          provide: getRepositoryToken(DroneRepository),
+          provide: 'DroneRepositoryInterface',
           useValue: mockDroneRepository,
         },
       ],

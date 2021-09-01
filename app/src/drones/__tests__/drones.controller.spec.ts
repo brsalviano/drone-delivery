@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DronesController } from '../drones.controller';
 import { DronesService } from '../drones.service';
 import { CreateDroneDto } from '../dto/create-drone.dto';
+import { mockDroneRepository } from './utils/drone-repository.mock';
 
 const newDrone: CreateDroneDto = {
   image: 'https://robohash.org/verovoluptatequia.jpg',
@@ -15,23 +16,20 @@ const newDrone: CreateDroneDto = {
 
 describe('DronesController', () => {
   let dronesController: DronesController;
-  let dronesService: DronesService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [DronesController],
       providers: [
+        DronesService,
         {
-          provide: DronesService,
-          useValue: {
-            insert: jest.fn().mockResolvedValue({ ...newDrone, id: 1 }),
-          },
+          provide: 'DroneRepositoryInterface',
+          useValue: mockDroneRepository,
         },
       ],
     }).compile();
 
     dronesController = module.get<DronesController>(DronesController);
-    dronesService = module.get<DronesService>(DronesService);
   });
 
   it('should be defined', () => {

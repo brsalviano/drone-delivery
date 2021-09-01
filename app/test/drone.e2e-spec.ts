@@ -127,7 +127,6 @@ describe('DronesController (e2e)', () => {
     );
   });
 
-
   /*
    * TESTS FOR DRONES LISTING
    */
@@ -181,7 +180,6 @@ describe('DronesController (e2e)', () => {
     });
 
     it('should return status 404 updating a drone that not exists', async () => {
-
       const updateFields: UpdateDroneDto = {
         name: 'teste',
       };
