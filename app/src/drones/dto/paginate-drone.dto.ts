@@ -1,6 +1,6 @@
 import { Allow } from 'class-validator';
 
-export class GetDronesDto {
+export class PaginateDroneDto {
   @Allow()
   _page?: number;
 

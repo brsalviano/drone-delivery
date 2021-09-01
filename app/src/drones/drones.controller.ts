@@ -12,9 +12,9 @@ import {
 import { Drone } from './drone.entity';
 import { DronesService } from './drones.service';
 import { CreateDroneDto } from './dto/create-drone.dto';
-import { GetDronesDto } from './dto/get-drones.dto';
-import { IPagination } from './interfaces/pagination.interface';
 import { UpdateDroneDto } from './dto/update-drone.dto';
+import { PaginateDroneDto } from './dto/paginate-drone.dto';
+import { Page } from './utils/page';
 
 @Controller('drones')
 export class DronesController {
@@ -26,8 +26,8 @@ export class DronesController {
   }
 
   @Get()
-  list(@Query() getDronesDto: GetDronesDto): Promise<IPagination<Drone>> {
-    return this.dronesService.getDrones(getDronesDto);
+  list(@Query() paginateDroneDto: PaginateDroneDto): Promise<Page<Drone>> {
+    return this.dronesService.getDrones(paginateDroneDto);
   }
 
   @Get('/:id')

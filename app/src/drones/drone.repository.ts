@@ -1,17 +1,11 @@
-import {
-  AbstractRepository,
-  DeepPartial,
-  EntityRepository,
-  Equal,
-  FindConditions,
-  Like,
-} from 'typeorm';
+import { AbstractRepository, DeepPartial, EntityRepository } from 'typeorm';
 import { Drone } from './drone.entity';
 import { DroneRepositoryInterface } from './interfaces/drone.repository.interface';
 import { CreateDroneDto } from './dto/create-drone.dto';
-import { GetDronesDto } from './dto/get-drones.dto';
-import { IPagination } from './interfaces/pagination.interface';
 import { Injectable } from '@nestjs/common';
+import { MapPaginationQueryTypeorm } from './utils/map-pagination-query-typeorm';
+import { Page } from './utils/page';
+import { PaginateDroneDto } from './dto/paginate-drone.dto';
 
 @Injectable()
 @EntityRepository(Drone)
@@ -38,90 +32,16 @@ export class DroneRepositoryImplTypeorm
     return true;
   }
 
-  async paginateDrones(
-    getDronesDto: GetDronesDto,
-  ): Promise<IPagination<Drone>> {
-    const { take, skip, page } = this.preparePagination(getDronesDto);
-    const sort = this.prepareSort(getDronesDto);
-    const filters = this.prepareFilters(getDronesDto);
+  async paginate(paginateDroneDto: PaginateDroneDto): Promise<Page<Drone>> {
+    const mapper = new MapPaginationQueryTypeorm(paginateDroneDto);
+    const queryOptions = mapper.getMappedQuery();
 
-    const [drones, total] = await this.repository.findAndCount({
-      where: filters,
-      take,
-      skip,
-      order: sort,
-    });
+    const [drones, total] = await this.repository.findAndCount(queryOptions);
 
-    return this.paginationResponse(drones, total, page, take);
-  }
+    const { itemsPerPage, currentPage } = mapper.getMappedPageMetadata();
 
-  private preparePagination(getDronesDto): {
-    take: number;
-    page: number;
-    skip: number;
-  } {
-    const take = this.checkAndParseMinNumber(getDronesDto._limit, 1, 20);
-    const page = this.checkAndParseMinNumber(getDronesDto._page, 1, 1);
-    const skip = (page - 1) * take;
+    const page = new Page<Drone>(total, drones, itemsPerPage, currentPage);
 
-    return {
-      take,
-      page,
-      skip,
-    };
-  }
-
-  private checkAndParseMinNumber(
-    value: string,
-    minNumber: number,
-    defaultValue: number,
-  ): number {
-    let parsedValue = value ? Number(value) : defaultValue;
-
-    if (parsedValue < minNumber) {
-      parsedValue = defaultValue;
-    }
-    return parsedValue;
-  }
-
-  private prepareSort(getDronesDto: GetDronesDto): { [key: string]: string } {
-    const { _sort = 'id', _order = 'ASC' } = getDronesDto;
-
-    const order = {};
-    order[_sort] = _order.toUpperCase();
-    return order;
-  }
-
-  private prepareFilters(
-    getDronesDto: GetDronesDto,
-  ): FindConditions<GetDronesDto> {
-    const { name = '', status = '' } = getDronesDto;
-
-    const where = {};
-
-    if (name) {
-      where['name'] = Like(`%${name}%`);
-    }
-
-    if (status) {
-      where['status'] = Equal(status);
-    }
-
-    return where;
-  }
-
-  private paginationResponse(
-    drones: Drone[],
-    total: number,
-    page: number,
-    take: number,
-  ): IPagination<Drone> {
-    return {
-      data: drones,
-      totalItems: total,
-      currentPage: page,
-      itemsPerPage: take,
-      totalPages: Math.ceil(total / take),
-    };
+    return page;
   }
 }

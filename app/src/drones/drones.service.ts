@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateDroneDto } from './dto/create-drone.dto';
 import { Drone } from './drone.entity';
-import { GetDronesDto } from './dto/get-drones.dto';
-import { IPagination } from './interfaces/pagination.interface';
 import { NotFoundException } from '@nestjs/common';
 import { UpdateDroneDto } from './dto/update-drone.dto';
 import { DroneRepositoryInterface } from './interfaces/drone.repository.interface';
+import { PaginateDroneDto } from './dto/paginate-drone.dto';
+import { Page } from './utils/page';
 
 @Injectable()
 export class DronesService {
@@ -19,8 +19,8 @@ export class DronesService {
     return drone;
   }
 
-  getDrones(getDronesDto: GetDronesDto): Promise<IPagination<Drone>> {
-    return this.droneRepository.paginateDrones(getDronesDto);
+  getDrones(paginateDroneDto: PaginateDroneDto): Promise<Page<Drone>> {
+    return this.droneRepository.paginate(paginateDroneDto);
   }
 
   async getDroneById(id: number): Promise<Drone> {
