@@ -41,7 +41,7 @@ export class DronesService {
     for (const key of Object.keys(updateDroneDto)) {
       drone[key] = updateDroneDto[key];
     }
-    this.droneRepository.save(drone);
+    await this.droneRepository.save(drone);
     return drone;
   }
 

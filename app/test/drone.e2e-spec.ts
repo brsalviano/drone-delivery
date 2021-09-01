@@ -6,9 +6,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DronesService } from '../src/drones/drones.service';
 import { Drone } from '../src/drones/drone.entity';
 import { ValidationPipe } from '@nestjs/common';
-import * as faker from 'faker';
 import { Connection, getConnection } from 'typeorm';
 import { DroneRepositoryInterface } from '../src/drones/interfaces/drone.repository.interface';
+import { DroneFactory } from '../src/db/_utils_/factory/drone.factory';
+import { UpdateDroneDto } from '../src/drones/dto/update-drone.dto';
 
 describe('DronesController (e2e)', () => {
   let app: INestApplication;
@@ -58,6 +59,9 @@ describe('DronesController (e2e)', () => {
     await app.close();
   });
 
+  /*
+   * TESTS FOR DRONES CREATION
+   */
   describe('insert drones (POST)', () => {
     it('should returns status code 201', async () => {
       const response = await request(app.getHttpServer())
@@ -123,6 +127,10 @@ describe('DronesController (e2e)', () => {
     );
   });
 
+
+  /*
+   * TESTS FOR DRONES LISTING
+   */
   describe('list drones (GET)', () => {
     it('should return status code 200', async () => {
       const response = await request(app.getHttpServer()).get('/drones');
@@ -141,27 +149,71 @@ describe('DronesController (e2e)', () => {
     });
   });
 
+  /*
+   * TESTS FOR UPDATE
+   */
+  describe('update drones (PUT)', () => {
+    it('should return status 200 when update a drone', async () => {
+      const { id } = await dronesService.insert(drone);
+
+      const updateFields: UpdateDroneDto = {
+        name: 'teste',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/drones/${id}`)
+        .send(updateFields);
+      expect(response.status).toBe(200);
+    });
+
+    it('should update the correct field', async () => {
+      await dronesService.insert(drone);
+
+      const updateFields: UpdateDroneDto = {
+        name: 'teste',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/drones/${1}`)
+        .send(updateFields);
+
+      expect(response.body.name).toBe(updateFields.name);
+    });
+
+    it('should return status 404 updating a drone that not exists', async () => {
+
+      const updateFields: UpdateDroneDto = {
+        name: 'teste',
+      };
+
+      const response = await request(app.getHttpServer())
+        .put(`/drones/${1}`)
+        .send(updateFields);
+      expect(response.status).toBe(404);
+    });
+  });
+
+  /*
+   * TESTS FOR DELETE
+   */
+  describe('delete drones (DELETE)', () => {
+    it('should return status 200 when delete a drone', async () => {
+      const { id } = await dronesService.insert(drone);
+
+      const response = await request(app.getHttpServer())
+        .delete(`/drones/${id}`)
+        .send();
+      expect(response.status).toBe(200);
+    });
+  });
+
+  /*
+   * TESTS FOR DRONES PAGINATION
+   */
   describe('paginate drones (GET)', () => {
     const droneFactory = async (amount) => {
       for (let i = 0; i < amount; i++) {
-        const drone = {
-          image: faker.image.imageUrl(),
-          name: faker.name.findName(),
-          address: faker.address.streetAddress(),
-          battery: faker.datatype.number({ min: 0, max: 100 }),
-          maxSpeed: faker.datatype.number({
-            min: 0,
-            max: 99,
-            precision: 2,
-          }),
-          averageSpeed: faker.datatype.number({
-            min: 0,
-            max: 99,
-            precision: 2,
-          }),
-          status: 'success',
-        };
-        await dronesService.insert(drone);
+        await dronesService.insert(new DroneFactory().create(1)[0]);
       }
     };
 
