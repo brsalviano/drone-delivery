@@ -3,18 +3,19 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { DronesModule } from '../src/drones/drones.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DroneRepository } from '../src/drones/drone.repository';
 import { DronesService } from '../src/drones/drones.service';
 import { Drone } from '../src/drones/drone.entity';
 import { ValidationPipe } from '@nestjs/common';
 import * as faker from 'faker';
-import { CreateDroneDto } from '../src/drones/dto/create-drone.dto';
+import { Connection, getConnection } from 'typeorm';
+import { DroneRepositoryInterface } from '../src/drones/interfaces/drone.repository.interface';
 
 describe('DronesController (e2e)', () => {
   let app: INestApplication;
+  let connection: Connection;
 
   let dronesService: DronesService;
-  let droneRepository: DroneRepository;
+  let droneRepository: DroneRepositoryInterface;
 
   const drone = {
     image: 'https://rasdhash.org/veroasdquia.jpg',
@@ -47,12 +48,13 @@ describe('DronesController (e2e)', () => {
     );
     await app.init();
 
-    droneRepository = moduleFixture.get(DroneRepository);
+    connection = getConnection();
+    droneRepository = moduleFixture.get('DroneRepositoryInterface');
     dronesService = new DronesService(droneRepository);
   });
 
   afterEach(async () => {
-    await droneRepository.query('DELETE FROM drones');
+    await connection.query('DELETE FROM drones');
     await app.close();
   });
 

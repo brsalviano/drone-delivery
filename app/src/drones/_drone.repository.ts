@@ -1,43 +1,16 @@
 import {
-  AbstractRepository,
-  DeepPartial,
   EntityRepository,
   Equal,
   FindConditions,
   Like,
+  Repository,
 } from 'typeorm';
 import { Drone } from './drone.entity';
-import { DroneRepositoryInterface } from './interfaces/drone.repository.interface';
-import { CreateDroneDto } from './dto/create-drone.dto';
 import { GetDronesDto } from './dto/get-drones.dto';
 import { IPagination } from './interfaces/pagination.interface';
-import { Injectable } from '@nestjs/common';
 
-@Injectable()
 @EntityRepository(Drone)
-export class DroneRepositoryImplTypeorm
-  extends AbstractRepository<Drone>
-  implements DroneRepositoryInterface
-{
-  async save(createDroneDto: CreateDroneDto): Promise<Drone> {
-    const partial: DeepPartial<Drone> = { ...createDroneDto };
-    const drone = this.repository.create(partial);
-    await this.repository.save(drone);
-    return drone;
-  }
-
-  async getById(id: number): Promise<Drone> {
-    return await this.repository.findOne(id);
-  }
-
-  async delete(id: number): Promise<boolean> {
-    const deleteResult = await this.repository.delete(id);
-    if (deleteResult.affected === 0) {
-      return false;
-    }
-    return true;
-  }
-
+export class DroneRepository extends Repository<Drone> {
   async paginateDrones(
     getDronesDto: GetDronesDto,
   ): Promise<IPagination<Drone>> {
@@ -45,7 +18,7 @@ export class DroneRepositoryImplTypeorm
     const sort = this.prepareSort(getDronesDto);
     const filters = this.prepareFilters(getDronesDto);
 
-    const [drones, total] = await this.repository.findAndCount({
+    const [drones, total] = await this.findAndCount({
       where: filters,
       take,
       skip,

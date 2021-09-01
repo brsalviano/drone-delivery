@@ -2,11 +2,21 @@ import { Module } from '@nestjs/common';
 import { DronesController } from './drones.controller';
 import { DronesService } from './drones.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DroneRepository } from './drone.repository';
+import { DroneRepositoryImplTypeorm } from './drone.repository';
+import { Connection } from 'typeorm';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([DroneRepository])],
+  imports: [TypeOrmModule.forFeature([DroneRepositoryImplTypeorm])],
   controllers: [DronesController],
-  providers: [DronesService],
+  providers: [
+    DronesService,
+    {
+      provide: 'DroneRepositoryInterface',
+      useFactory: (connection: Connection) => {
+        return connection.getCustomRepository(DroneRepositoryImplTypeorm);
+      },
+      inject: [Connection],
+    },
+  ],
 })
 export class DronesModule {}
