@@ -1,6 +1,6 @@
 import { createConnection } from 'typeorm';
 import config from '../ormconfig';
-import { DroneFactory } from './factory/drone.factory';
+import { DroneFactory } from '../../_utils_/factory/drone.factory';
 import { DroneSeeder } from './seeds/drone.seeder';
 
 async function runSeeder() {

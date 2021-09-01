@@ -1,6 +1,6 @@
 import * as faker from 'faker';
-import { FactoryInterface } from '../../../../db/typeorm/seeder/interfaces/factory.interface';
-import { Drone } from '../../../../drones/drone.entity';
+import { FactoryInterface } from './factory.interface';
+import { Drone } from '../../../drones/drone.entity';
 /*
  * Class for create drones.
  */
@@ -14,19 +14,21 @@ export class DroneFactory implements FactoryInterface<Drone> {
 
     for (let i = 0; i < amount; i++) {
       const drone = new Drone();
-      drone.image = faker.image.imageUrl();
+      drone.image = `https://git robohash.org/${faker.name
+        .firstName()
+        .toLocaleLowerCase()}${faker.name.lastName().toLowerCase()}.jpg`;
       drone.name = faker.name.findName();
       drone.address = faker.address.streetAddress();
       drone.battery = faker.datatype.number({ min: 0, max: 100 });
       drone.maxSpeed = faker.datatype.number({
         min: 0,
         max: 99,
-        precision: 1,
+        precision: 0.01,
       });
       drone.averageSpeed = faker.datatype.number({
         min: 0,
-        max: 99,
-        precision: 1,
+        max: Math.trunc(drone.maxSpeed),
+        precision: 0.01,
       });
       drone.status = faker.helpers.shuffle(['success', 'failed'])[0];
 
